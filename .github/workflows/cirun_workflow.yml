@@ -1,0 +1,29 @@
+name: Cirun MacOS Runner
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  cirun-macos-runner:
+    strategy:
+      matrix:
+        os:
+          - "cirun-macos-runner--${{ github.run_id }}"
+    permissions: write-all
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.0.0
+      - name: Run ls and pwd
+        run: |
+          ls
+          pwd
+          df -h
+      - name: System information
+        run: |
+          sysctl -a | grep machdep.cpu
+          system_profiler SPHardwareDataType | grep -vE "Serial Number|UUID"
+
+      - name: Graphics information
+        run: system_profiler SPDisplaysDataType
